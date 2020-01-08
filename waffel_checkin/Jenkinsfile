@@ -1,0 +1,75 @@
+#!groovy
+
+pipeline {
+    agent {
+        node {
+            label 'master'
+        }
+    }
+    options {
+        skipDefaultCheckout false
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    triggers {
+        pollSCM 'H/10 * * * *'
+    }
+    stages {
+        stage('waffel lamda deploy') {
+            when {
+                branch 'master'
+            }
+            agent {
+                docker {
+                    image 'lambci/lambda:build-python2.7'
+                    args '-u root'
+                }
+            }
+            steps {
+                
+                dir("app/slackbot/src") {
+                    withCredentials([[
+                        $class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'c4d13238-6129-40c3-b3c4-bbe6e35cb1b6',
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD'
+                    ]]) {
+                        sh "echo https://${USERNAME}:${PASSWORD}@bitbucket.org > /root/.git-credentials"
+                        sh "git config --global credential.helper store"
+                        sh 'pip install -r requirements.txt -t ./'
+                        sh 'chmod -R 755 .'
+                    }
+                    echo "Deploying to qa environment"
+                    withAWS(credentials:'35a6c45c-5c20-467e-aae3-3bdbb1030ec3') {
+                        deployLambda (
+                            [
+                            functionName: 'provisioncat-prod-slackbot',
+                            awsRegion: 'us-east-1',
+                            updateMode: 'code',
+                            publish: 'True',
+                            createAlias: 'True',
+                            alias: 'prod',
+                            artifactLocation: '.',
+                            useInstanceCredentials: 'True'
+                            ]
+                        )
+                    }
+                }
+            }   
+        }
+    }
+    post {
+        failure {
+            echo "bad"
+        }
+        success {
+            echo "good"
+        }
+        always {
+            echo 'Updating folder permissions.'
+            sh "chmod -R 777 ."
+        }
+        cleanup {
+            deleteDir()
+        }
+    } 
+}
