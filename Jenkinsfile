@@ -18,12 +18,6 @@ pipeline {
             when {
                 branch 'master'
             }
-            agent {
-                docker {
-                    image 'python:3.7.2'
-                    args '-u root'
-                }
-            }
             steps {
                 dir("waffle_checkin") {
                     
@@ -33,7 +27,7 @@ pipeline {
                         usernameVariable: 'USERNAME',
                         passwordVariable: 'PASSWORD'
                     ]]) {
-                        sh 'pip install -r requirements.txt -t ./'
+                        sh 'python3 -m pip install -r requirements.txt -t ./'
                         sh 'chmod -R 755 .'
                     }
                     sh "ls -l"
@@ -53,7 +47,7 @@ pipeline {
 
                 }
         }
-        stage ("Apply") {
+        stage ("terraform-Apply") {
             steps {
                 input "Do you approve deployment?"
                 echo "appying"
