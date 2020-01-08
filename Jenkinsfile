@@ -20,7 +20,7 @@ pipeline {
             }
             steps {
                 dir("waffle_checkin") {
-                    
+                    echo "getting files"
                     withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'aws',
@@ -30,8 +30,6 @@ pipeline {
                         sh 'python3 -m pip install -r requirements.txt -t ./'
                         sh 'chmod -R 755 .'
                     }
-                    sh "ls -l"
-                    echo "getting files"
                 }
             }
         }
@@ -43,11 +41,9 @@ pipeline {
                 sh "pwd"
                 sh 'terraform init'
                 sh 'terraform plan'
-            
-
-                }
+            }
         }
-        stage ("terraform-Apply") {
+        stage ("terraform-apply") {
             steps {
                 input "Do you approve deployment?"
                 echo "appying"
