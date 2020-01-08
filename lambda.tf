@@ -1,6 +1,6 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "."
+  source_dir  = "waffle_checkin"
   output_path = "waffle_checkin.zip"
 }
 
