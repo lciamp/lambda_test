@@ -25,7 +25,7 @@ pipeline {
                 }
             }
             steps {
-                dir("waffel_checkin") {
+                dir("waffle_checkin") {
                     
                     withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
