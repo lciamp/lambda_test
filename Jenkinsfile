@@ -18,15 +18,15 @@ pipeline {
             when {
                 branch 'master'
             }
+            agent {
+                docker {
+                    image 'python:3.7.2'
+                    args '-u root'
+                }
+            }
             steps {
-                
                 dir("waffel_checkin") {
-                    agent {
-                        docker {
-                            image 'python:3.7.2'
-                            args '-u root'
-                        }
-                    }
+                    
                     withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'aws',
