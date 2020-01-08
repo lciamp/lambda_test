@@ -45,6 +45,7 @@ pipeline {
                 branch 'master'
             }
             steps {
+                sh "pwd"
                 sh 'terraform init'
                 sh 'terraform plan'
 
