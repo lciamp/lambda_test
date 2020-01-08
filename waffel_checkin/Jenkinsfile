@@ -14,45 +14,34 @@ pipeline {
         pollSCM 'H/10 * * * *'
     }
     stages {
-        stage('waffel lamda deploy') {
+        stage('waffel lamda zip') {
             when {
                 branch 'master'
             }
-            agent {
-                docker {
-                    image 'lambci/lambda:build-python2.7'
-                    args '-u root'
-                }
-            }
             steps {
                 
-                dir("app/slackbot/src") {
+                dir("waffel_checkin") {
                     withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'c4d13238-6129-40c3-b3c4-bbe6e35cb1b6',
+                        credentialsId: 'aws',
                         usernameVariable: 'USERNAME',
                         passwordVariable: 'PASSWORD'
                     ]]) {
-                        sh "echo https://${USERNAME}:${PASSWORD}@bitbucket.org > /root/.git-credentials"
-                        sh "git config --global credential.helper store"
                         sh 'pip install -r requirements.txt -t ./'
                         sh 'chmod -R 755 .'
                     }
                     echo "Deploying to qa environment"
-                    withAWS(credentials:'35a6c45c-5c20-467e-aae3-3bdbb1030ec3') {
-                        deployLambda (
-                            [
-                            functionName: 'provisioncat-prod-slackbot',
-                            awsRegion: 'us-east-1',
-                            updateMode: 'code',
-                            publish: 'True',
-                            createAlias: 'True',
-                            alias: 'prod',
-                            artifactLocation: '.',
-                            useInstanceCredentials: 'True'
-                            ]
-                        )
-                    }
+                }
+            }   
+        }
+        stage('terraform-plan') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh 'terraform init'
+                sh 'terraform plan'
+
                 }
             }   
         }
