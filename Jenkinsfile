@@ -36,6 +36,7 @@ pipeline {
                         sh 'pip install -r requirements.txt -t ./'
                         sh 'chmod -R 755 .'
                     }
+                    sh "ls -l"
                     echo "getting files"
                 }
             }
@@ -48,7 +49,7 @@ pipeline {
                 sh "pwd"
                 sh 'terraform init'
                 sh 'terraform plan'
-                sh 'ls -l'
+            
 
                 }
         }
