@@ -45,7 +45,6 @@ pipeline {
                 }
             }   
         }
-    }
     post {
         failure {
             echo "bad"
@@ -60,5 +59,5 @@ pipeline {
         cleanup {
             deleteDir()
         }
-    } 
+    }
 }
