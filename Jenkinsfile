@@ -50,8 +50,15 @@ pipeline {
                 sh 'terraform plan'
 
                 }
-            }   
         }
+        stage ("Apply") {
+            steps {
+                input "Do you approve deployment?"
+                echo "appying"
+                sh "echo 'yes' | terraform apply"
+            }
+        }
+    }
     post {
         failure {
             echo "bad"
