@@ -37,20 +37,12 @@ pipeline {
                         sh 'chmod -R 755 .'
                     }
                     echo "getting files"
+                    sh "pwd"
+                    sh 'terraform init'
+                    sh 'terraform plan'
                 }
             }
         }
-        stage('terraform-plan') {
-            when {
-                branch 'master'
-            }
-            steps {
-                sh "pwd"
-                sh 'terraform init'
-                sh 'terraform plan'
-
-                }
-            }   
         }
     post {
         failure {
