@@ -52,7 +52,15 @@ pipeline {
         }
         stage ("artifact to s3") {
             steps {
-                s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket/archives', path:'.')   
+                withCredentials([[
+                        $class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'aws',
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD'
+                    ]]) {
+                        s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket/archives', path:'.') 
+                    }
+                  
             }
         }
     }
