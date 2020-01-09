@@ -50,6 +50,11 @@ pipeline {
                 sh "echo 'yes' | terraform apply"
             }
         }
+        stage ("artifact to s3") {
+            steps {
+                s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket/archives', path:'.')   
+            }
+        }
     }
     post {
         failure {
