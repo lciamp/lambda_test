@@ -56,7 +56,7 @@ pipeline {
         }
         stage ("artifact to s3") {
             steps {
-                        s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket', path:'archives/waffle_checkin.zip') 
+                        s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket', path:'archives/waffle_checkin.zip', region:'us-east-1') 
 
                   
             }
