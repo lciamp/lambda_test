@@ -13,6 +13,10 @@ pipeline {
     triggers {
         pollSCM 'H/10 * * * *'
     }
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+    }
     stages {
         stage('waffel lamda zip') {
             when {
@@ -52,14 +56,8 @@ pipeline {
         }
         stage ("artifact to s3") {
             steps {
-                withCredentials([[
-                        $class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'aws',
-                        usernameVariable: 'USERNAME',
-                        passwordVariable: 'PASSWORD'
-                    ]]) {
-                        s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket/archives', path:'.') 
-                    }
+                        s3Upload(file:'waffle_checkin.zip', bucket:'lous-test-bucket', path:'archives/waffle_checkin.zip') 
+
                   
             }
         }
