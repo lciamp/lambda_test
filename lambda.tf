@@ -8,7 +8,7 @@ resource "aws_lambda_function" "waffle_checkin" {
   filename         = "${data.archive_file.lambda_zip.output_path}"
   function_name    = "waffle_checkin"
   timeout          = 60
-  role             = "arn:aws:iam::200882202304:role/iam_for_lambda_tf"
+  role             = "${aws_iam_role.iam_for_lambda_tf.arn}"
   handler          = "waffle_checkin.lambda_handler"
   runtime          = "python3.7"
   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
