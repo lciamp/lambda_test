@@ -54,15 +54,13 @@ pipeline {
                 sh "echo 'yes' | terraform apply"
             }
         }
-        stage ("artifact to s3") {
-            steps {
-               
-                withAWS(credentials:'aws') {
-                    s3Upload(file: 'waffle_checkin.zip', bucket: 'lous-test-bucket', path: 'archives/waffle_checkin.zip')
-                }
-                  
-            }
-        }
+        //stage ("artifact to s3") {
+        //    steps {
+        //        withAWS(credentials:'aws') {
+        //            s3Upload(file: 'waffle_checkin.zip', bucket: 'lous-test-bucket', path: 'archives/waffle_checkin.zip')
+        //        }        
+        //    }
+        //}
     }
     post {
         failure {
